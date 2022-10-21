@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="https://kit.fontawesome.com/b3348ae33f.js" crossorigin="anonymous"></script>
+    <title>
+        <!-- <%= title %> -->
+        <%= locals.title %>
+    </title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+    <h1 id="page-heading"><i class="fa-solid fa-address-card"></i>  My Contact List</h1>
+
+
+    <div  id="contacts-list-container">
+        <ul>
+            <!-- key that have used contacts_list -->
+            <% for(let i of contacts_list){%>
+                <li class="contact">
+                  <div class="details">
+                    <p><%= i.name %></p>
+                    <p><%= i.phone %></p>
+                   </div>
+
+                
+                   <div class="delete-button">
+                        <a href="/delete-contact/?phone=<%= i.phone %>">
+                            <i class="fa-regular fa-rectangle-xmark"></i>
+                        </a>
+
+                   </div>
+                 
+                  <!-- query params <a href="delete-contact/?phone=<%=i.phone %>"> -->
+                    <!-- when we kill the server it refelcts query id to be delted -->
+                    <!-- to chain them we use & -->
+                    <!-- it automatically coverted into url -->
+
+
+                   <!-- <div class="delete-button">
+                    <a  href="delete-contact/?phone=<%=i.phone %> & name=<%=i.name%>">
+                        <i class="fa-regular fa-rectangle-xmark"></i>
+
+
+                    </a>
+
+                  </div> -->
+                </li>
+            <%}%>
+        </ul>
+    </div>
+
+
+    <form id="new-contact-form" action="/create-contact " method="POST">
+        <input type="text" name="name" placeholder="Enter name" required>
+        <input type="number" name="phone" placeholder="Enter Phone" required>
+
+        <button type="submit">Add Contacts</button>
+    </form>
+
+
+   <!-- script at the bottom -->
+      <script type="text/javascript" src="/js/home.js"></script>
+
+
+</body>
+</html>
