@@ -3,6 +3,11 @@ const express=require('express');
 const path=require('path');
 const port=8000;
 
+
+const db=require('./config/mongoose');
+const Contact=require('./models/contact');
+
+
 const app=express();
 //Multiple type of request first is get
 //\\
@@ -45,8 +50,25 @@ app.use(function(req,res,next)
         phone:"2345678912"
     },
  ]
+ //database is to be show 
+ app.get('/',function(req,res){
+ //{} contains which have to be finded i.e we have to check {name:"nitesh"}
+ //then it checks in database and it shows on browser when it referesh
+    Contact.find({},function(err,contacts)
+    {
+        if(err)
+        {
+        console.log('Error in fetching contacts from db');
+        return;
+        }
+        return res.render('hoem',{title:"My Contact_list",
+        contacts_list:contacts});
+    })
+
+ });
 
 
+ /*
 app.get('/',function(req,res){
     console.log("from the get route controller",req.myName)
 
@@ -55,13 +77,13 @@ app.get('/',function(req,res){
      //how to render views to path
 //    console.log(__dirname);
    
-    // res.send('<h1>cool,it is running! or it is?</h1>');
+// res.send('<h1>cool,it is running! or it is?</h1>');
 
 // render from hoem html
     return res.render('hoem',{title:"My Contact_list",
          contacts_list:contactList});
 })
-
+*/
 //request(req) and response(res)
 app.get('/practice',function(req,res){
    
@@ -83,12 +105,22 @@ app.post('/create-contact',function(req,res)
     });
     */
     //It can be reduced as
-    contactList.push(req.body);
+    // contactList.push(req.body);
+    Contact.create({
+        name:req.body.name,
+        phone:req.body.phone
+    },function(err,newContact)
+    {
+        if(err)
+        {
+            console.log('error in creating a contact!');
+            return;
+        }
+        console.log('********',newContact);
+        return res.redirect('/');
+    });
    
-   
-
-
-     return res.redirect('/');
+    // return res.redirect('/');
 })
 /*
 app.get('/delete-contact/:phone',function(req,res)
@@ -100,7 +132,7 @@ app.get('/delete-contact/:phone',function(req,res)
 // it jsut visible over the url if delete it is an get request so it visible 
 
 //for deleting a contact 
-
+/*
 app.get('/delete-contact/',function(req,res)
 {
       console.log(req.query);
@@ -115,6 +147,29 @@ app.get('/delete-contact/',function(req,res)
        return res.redirect('back');
 
 });
+*/
+
+
+//deleting an contact from database from id
+//get the id from query in the ul
+app.get('/delete-contact/',function(req,res)
+{
+   let id=req.query.id;
+
+   //find the contact in tha database using id and delete
+   Contact.findByIdAndDelete(id,function(err)
+   {
+    if(err)
+    {
+      console.log('error in delete an object from database');
+      return;  
+    }
+    return res.redirect('back');
+   });
+
+});
+
+
 
 app.listen(port,function(err){
     if(err)
